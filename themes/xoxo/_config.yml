@@ -1,0 +1,46 @@
+
+# html lang
+language: zh-Hans
+
+# main menu navigation
+menu:
+  home: /
+  archives: /archives
+  tags: /tags
+  #categories: /categories
+  search: /search
+  about: https://github.com/sooola
+  # rss: /atom.xml
+
+# Miscelaneous
+favicon: /logo.png
+
+# stylesheets loaded in the <head>
+stylesheets:
+# - /css/normalize.css
+- //cdn.bootcss.com/pure/1.0.0/pure-min.css
+- /css/xoxo.css
+
+# scripts loaded in the end of the body
+scripts:
+#- //cdn.bootcss.com/zepto/1.2.0/zepto.min.js
+#- /js/xoxo.js
+
+# switch
+show_excerpt: true
+show_date: true
+#footer
+index_page: https://sooola.github.io/
+main_site: https://sooola.github.io/
+github: https://github.com/sooola
+
+#gitalk settings
+#gitalk:
+#  owner: 'sooola'
+#  enable: true
+#  admin: ['sooola']
+#  repo: 'blog-comments'
+#  ClientID: '3cc4ee1455443d7e9cbf'
+#  ClientSecret: 'd959c09a9dc95be7c4b1e79228278f954b2becb2'
+# id: location.pathname
+# distractionFreeMode: false 
