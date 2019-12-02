@@ -11,7 +11,7 @@
   <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
   
   
-    <meta name="keywords" content="hexo,tags,">
+    <meta name="keywords" content="android,">
   
 
   
@@ -19,7 +19,7 @@
   
   
   <link rel="icon" type="image/x-icon" href="/logo.png">
-  <title>第一次上传 [ sooola的博客 ]</title>
+  <title>Android Studio打造自己的Live Templates [ sooola的博客 ]</title>
   
     <!-- stylesheets list from config.yml -->
     
@@ -72,19 +72,19 @@
   <article class="post" id="post">
     <header class="post-header text-center">
       <h1 class="title">
-        第一次上传
+        Android Studio打造自己的Live Templates
       </h1>
       <span>
         
-        <time class="time" datetime="2019-10-17T02:41:08.992Z">
-        2019-10-17
+        <time class="time" datetime="2019-12-02T03:39:28.000Z">
+        2019-12-02
       </time>
         
       </span>
       <span class="slash">/</span>
       <span class="post-meta">
       <span class="post-tags">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hexo/">hexo</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/tags/">tags</a></li></ul>
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/">android</a></li></ul>
       </span>
     </span>
       <span class="slash">/</span>
@@ -95,11 +95,44 @@
     </header>
 
     <div class="post-content">
-      <p>这是我的第一篇博客，试试上传的效果</p>
-<a id="more"></a>
+      <h2 id="什么是Live-Templates"><a href="#什么是Live-Templates" class="headerlink" title="什么是Live Templates"></a><strong>什么是Live Templates</strong></h2><p>以我的理解，Live Templates是代码模板的快捷定义，如常见的，你定义了findViewById(R.id.)的模块代码的模板为fvd，那么以后我们按fv就可以快速的调用定义好的模板了！熟练的使用Live Templates将大大提到我们的编程效率！这个例子下面也有讲到，那么先看看怎么定义一个Live Templates</p>
+<h2 id="设置位置"><a href="#设置位置" class="headerlink" title="设置位置"></a>设置位置</h2><p>setting-&gt;Editor-&gt;Live Templates</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1816215-02eae4a13244be65.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="img"></p>
+<h2 id="创建一个Live-Templates"><a href="#创建一个Live-Templates" class="headerlink" title="创建一个Live Templates"></a><strong>创建一个Live Templates</strong></h2><p><img src="https://upload-images.jianshu.io/upload_images/1816215-44c9299bcdcb4719.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="img"></p>
+<p>击点右边的 + 号出现如上界面</p>
+<p>如我们想把findViewbyid创建一个Live Templates，可以先把代码cv到Template text里，然后用$…$ 替换等待输入的变量替换后如下</p>
+<blockquote>
+<p>($cast$) findViewById(R.id.$res$);</p>
+</blockquote>
+<p>记得要先点击下面的Define定义这个Templates使用的地方，一般全部勾选就可以了</p>
+<p>然后就可以点击edit variables对等输入变量进行编辑了</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1816215-f8fa26840cd43ad2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="img"></p>
+<p>Name  你定义的所有$..$</p>
+<p>Expression  为待输入变量</p>
+<p>Default value  赋值默认值</p>
+<p>Skip if defined是否跳过编辑</p>
+<hr>
+<p>上面Expression使用<strong>expectedType()</strong>就可以根据我们前面定义的View自动转换，当前Expression还有很多函数可以使用具体可以查看如下官方说明：</p>
+<p><a href="https://www.jetbrains.com/help/idea/2016.1/live-template-variables.html" target="_blank" rel="noopener">https://www.jetbrains.com/help/idea/2016.1/live-template-variables.html</a></p>
+<p>结果如下:</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1816215-bc7f5f1857c05d9e.gif?imageMogr2/auto-orient/strip" alt="img"></p>
+<p>在定义一个常见的LOG</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1816215-076e7d046787085e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="img"></p>
+<p>基本跟findviewById差不多，只是Expression改为className，OK结果如下</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1816215-58c7538db2aeed1d.gif?imageMogr2/auto-orient/strip" alt="img"></p>
+<h2 id="快速导入一个-Live-Templates"><a href="#快速导入一个-Live-Templates" class="headerlink" title="快速导入一个**Live Templates**"></a><strong>快速导入一个**</strong>Live Templates**</h2><p>如果你跟我一样那么懒，自己慢慢加就太慢了，大神早已写好了一些常用的Live Templates，直接导入使用就可以了，地址如下：</p>
+<p><a href="https://github.com/keyboardsurfer/idea-live-templates" target="_blank" rel="noopener">https://github.com/keyboardsurfer/idea-live-templates</a></p>
+<p>直接复制到你的 Android Studio config\templates目录下</p>
+<p>我的在这里C:\Users\Administrator.AndroidStudio2.0\config\templates</p>
+<p>按下ctrl + J 就可以快速查看Live Templates了</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1816215-bde55469c30fdb50.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="img"></p>
+<hr>
+<p>参考文章:</p>
+<p><a href="http://blog.csdn.net/DesmondJ/article/details/47017205" target="_blank" rel="noopener">http://blog.csdn.net/DesmondJ/article/details/47017205</a></p>
+<p><a href="https://www.bignerdranch.com/blog/android-studio-live-templates/" target="_blank" rel="noopener">https://www.bignerdranch.com/blog/android-studio-live-templates/</a></p>
+<p><a href="https://github.com/keyboardsurfer/idea-live-templates" target="_blank" rel="noopener">https://github.com/keyboardsurfer/idea-live-templates</a></p>
+<p><a href="https://www.jetbrains.com/help/idea/2016.1/live-template-variables.html?origin=old_help" target="_blank" rel="noopener">https://www.jetbrains.com/help/idea/2016.1/live-template-variables.html?origin=old_help</a></p>
 
-
-<h2 id="哈哈"><a href="#哈哈" class="headerlink" title="哈哈"></a>哈哈</h2>
     </div>
 
     <div>全文完。</div>
@@ -108,7 +141,7 @@
     
   <div id="toc" class="toc-article">
     <strong class="toc-title">Posts</strong>
-    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#哈哈"><span class="toc-text">哈哈</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#什么是Live-Templates"><span class="toc-text">什么是Live Templates</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#设置位置"><span class="toc-text">设置位置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#创建一个Live-Templates"><span class="toc-text">创建一个Live Templates</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#快速导入一个-Live-Templates"><span class="toc-text">快速导入一个**Live Templates**</span></a></li></ol>
   </div>
 
 
@@ -129,19 +162,14 @@
       <div class="post-nav-item post-nav-next">
         
           <span>〈 </span>
-          <a href="/2016/11/16/login-v2ex/" rel="next" title="Android模拟登录V2EX">
-          Android模拟登录V2EX
+          <a href="/2019/10/17/testPost/" rel="next" title="第一次上传">
+          第一次上传
           </a>
         
       </div>
   
       <div class="post-nav-item post-nav-prev">
           
-          <a href="/2019/12/02/Android Studio打造自己的Live Templates/" rel="prev" title="Android Studio打造自己的Live Templates">
-            Android Studio打造自己的Live Templates
-          </a>
-          <span>〉</span>
-        
       </div>
     </div>
   
