@@ -19,7 +19,7 @@
   
   
   <link rel="icon" type="image/x-icon" href="/logo.png">
-  <title>EventBus-Analysis [ sooola的博客 ]</title>
+  <title>EventBu源码分析 [ sooola的博客 ]</title>
   
     <!-- stylesheets list from config.yml -->
     
@@ -72,7 +72,7 @@
   <article class="post" id="post">
     <header class="post-header text-center">
       <h1 class="title">
-        EventBus-Analysis
+        EventBu源码分析
       </h1>
       <span>
         
@@ -92,7 +92,7 @@
 
     <div class="post-content">
       <p>EventBus是Android开发中常用的通知事件框架，使用EventBus非常简单只需3布即可，那么实际上EventBus是怎么实现订阅通知的？下面我们从源码开始分析</p>
-<p><img src="C:%5CUsers%5C32937%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5C1577167875140.png" alt="1577167875140"></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1816215-340c82a817875d7a.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="eventbus_img.png"></p>
 <h2 id="二、源码分析"><a href="#二、源码分析" class="headerlink" title="二、源码分析"></a>二、源码分析</h2><p>我们使用EventBus时，需要在生命周期中注册为订阅者 ，代码如下</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onStart</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.onStart();</span><br><span class="line">    EventBus.getDefault().register(<span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onStop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.onStop();</span><br><span class="line">    EventBus.getDefault().unregister(<span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
