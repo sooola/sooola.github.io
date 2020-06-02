@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-Hans">
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
@@ -27,7 +27,7 @@
 <meta property="og:url" content="https://sooola.github.io/2016/11/16/login-v2ex/index.html">
 <meta property="og:site_name" content="sooola的博客">
 <meta property="og:description" content="最近在撸一个V2EX的客户端，官方API缺少一些功能如登录，发帖等，撸完官方API总觉得少了什么，本篇文章主要通过模拟登录实现一些官方没提供API的功能    观察登录传输的数据在网页上登录帐号，通过chrome的调试模式可以看到 ，我们传了4个数据给服务器，分别是帐号，密码，once，和next，once是用来验证是否人为操作的标志，POST时必须带上这个字段，否则会认为是非人为操作而被禁止访">
-<meta property="og:locale" content="en">
+<meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1816215-fbe6d5d338844af3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1816215-8b61db054c2c8378.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/1816215-c66d3c3ca95e0b9f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
@@ -46,7 +46,7 @@
     sidebar: "",
     isHome : false,
     isPost : true,
-    lang   : 'en'
+    lang   : 'zh-Hans'
   };
 </script>
 
@@ -90,7 +90,7 @@
     <header class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <div class="toggle" aria-label="Toggle navigation bar">
+    <div class="toggle" aria-label="تشغيل شريط التصفح">
       <span class="toggle-line toggle-line-first"></span>
       <span class="toggle-line toggle-line-middle"></span>
       <span class="toggle-line toggle-line-last"></span>
@@ -125,12 +125,12 @@
   </li>
         <li class="menu-item menu-item-tags">
 
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a>
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>الوسوم</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>الأرشيفات</a>
 
   </li>
   </ul>
@@ -160,7 +160,7 @@
     
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
     <link itemprop="mainEntityOfPage" href="https://sooola.github.io/2016/11/16/login-v2ex/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -182,16 +182,16 @@
               <span class="post-meta-item-icon">
                 <i class="far fa-calendar"></i>
               </span>
-              <span class="post-meta-item-text">Posted on</span>
+              <span class="post-meta-item-text">نُشر في</span>
 
-              <time title="Created: 2016-11-16 11:41:33" itemprop="dateCreated datePublished" datetime="2016-11-16T11:41:33+08:00">2016-11-16</time>
+              <time title="أُنشأ: 2016-11-16 11:41:33" itemprop="dateCreated datePublished" datetime="2016-11-16T11:41:33+08:00">2016-11-16</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2019-12-02 14:12:16" itemprop="dateModified" datetime="2019-12-02T14:12:16+08:00">2019-12-02</time>
+                <span class="post-meta-item-text">عُدل في</span>
+                <time title="عُدل: 2019-12-02 14:12:16" itemprop="dateModified" datetime="2019-12-02T14:12:16+08:00">2019-12-02</time>
               </span>
 
           
@@ -304,10 +304,10 @@
 
       <ul class="sidebar-nav motion-element">
         <li class="sidebar-nav-toc">
-          Table of Contents
+          المحتويات
         </li>
         <li class="sidebar-nav-overview">
-          Overview
+          عام
         </li>
       </ul>
 
@@ -330,14 +330,14 @@
           <a href="/archives/">
         
           <span class="site-state-item-count">16</span>
-          <span class="site-state-item-name">posts</span>
+          <span class="site-state-item-name">المقالات</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
         <span class="site-state-item-count">8</span>
-        <span class="site-state-item-name">tags</span></a>
+        <span class="site-state-item-name">الوسوم</span></a>
       </div>
   </nav>
 </div>
@@ -374,7 +374,7 @@
   </span>
   <span class="author" itemprop="copyrightHolder">wei</span>
 </div>
-  <div class="powered-by">Powered by <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  <div class="powered-by">تطبيق الموقع <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
   </div>
 
         
