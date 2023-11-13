@@ -1,0 +1,410 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#202020"/>
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+  
+  
+    <meta name="keywords" content="android,设计模式," />
+  
+
+  
+    <meta name="description" content="sola的博客,java,Android,游戏，动漫，日剧" />
+  
+  
+  <link rel="icon" type="image/x-icon" href="/logo.png">
+  <title>观察者模式笔记 [ sooola的博客 ]</title>
+  
+    <!-- stylesheets list from config.yml -->
+    
+      <link rel="stylesheet" href="//cdn.bootcss.com/pure/1.0.0/pure-min.css">
+    
+      <link rel="stylesheet" href="/css/xoxo.css">
+    
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  <div class="nav-container">
+    <nav class="home-menu pure-menu pure-menu-horizontal">
+  <a class="pure-menu-heading" href="/">
+    <img class="avatar" src="https://sooola.github.io/images/logo.png">
+    <span class="title">sooola的博客</span>
+  </a>
+
+  <ul class="pure-menu-list clearfix">
+      
+          
+            <li class="pure-menu-item"><a href="/" class="pure-menu-link">首页</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/archives" class="pure-menu-link">归档</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/tags" class="pure-menu-link">标签</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/search" class="pure-menu-link">搜索</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="https://github.com/sooola" class="pure-menu-link">关于</a></li>
+          
+      
+  </ul>
+   
+</nav>
+  </div>
+
+  <div class="container" id="content-outer">
+    <div class="inner" id="content-inner">
+      <div class="post-container">
+  <article class="post" id="post">
+    <header class="post-header text-center">
+      <h1 class="title">
+        观察者模式笔记
+      </h1>
+      <span>
+        
+        <time class="time" datetime="2017-01-04T14:33:11.000Z">
+        2017-01-04
+      </time>
+        
+      </span>
+      <span class="slash">/</span>
+      <span class="post-meta">
+      <span class="post-tags">
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/" rel="tag">android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li></ul>
+      </span>
+    </span>
+      <span class="slash">/</span>
+    </header>
+
+    <div class="post-content">
+      <h1 id="什么是观察者模式"><a href="#什么是观察者模式" class="headerlink" title="什么是观察者模式"></a>什么是观察者模式</h1><p>现实生活中的例子：  </p>
+<ol>
+<li>报社的业务是出版报纸  </li>
+<li>向某家报社订阅报纸，只要他们有新报纸出版，就会给你送来。只要你是他们的订户，就会一直收到报纸。  </li>
+<li>当你不想再看报纸时，取消订阅，他们就不会再送新报纸来。  </li>
+<li>只要报纸还在运营，就会一直有人向他们订阅报纸或取消报纸。</li>
+</ol>
+<h1 id="定义观察者模式"><a href="#定义观察者模式" class="headerlink" title="定义观察者模式"></a>定义观察者模式</h1><p><strong>观察值模式</strong>  定义了对象之间的一对多依赖，这样一来，当一个对象改变状态时，它的所有依赖者都会收到通知并自动更新。</p>
+<p>#观察者模式类图<br><img src="http://upload-images.jianshu.io/upload_images/1816215-5913b6364257b192.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"></p>
+<h1 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h1><p><strong>Subject.class 主题接口</strong></p>
+<pre><code>public interface Subject&#123;
+
+public void registerObserver (Observer o);    //需要一个观察者用与注册
+
+public void removeObserver(Observer o);
+
+public void notifyObservers();&#125;
+</code></pre>
+<p><strong>WeatherData.class 主题实现类</strong></p>
+<pre><code>public class WeatherData implements Subject &#123;        //实现主题接口
+
+private ArrayList&lt;Observer&gt; observers;    //用来记录观察者
+private float temperature;
+private float humidity;
+private float pressure;
+
+public WeatherData() &#123;
+    observers = new ArrayList&lt;&gt;();
+&#125;
+
+@Override
+public void registerObserver(Observer o) &#123;
+    observers.add(o);    //注册观察者，即添加到List后
+&#125;
+
+@Override
+public void removeObserver(Observer o) &#123;
+    int i = observers.indexOf(o);    //移除观察者
+    if (i &gt;=0)&#123;
+        observers.remove(i);
+    &#125;
+&#125;
+
+@Override
+public void notifyObservers() &#123;
+    //遍历每一个观察者，调用观察则的update方法
+    for (int i = 0 ; i &lt; observers.size() ; i++)&#123;
+        Observer observer = observers.get(i);
+        observer.update(WeatherData.this);
+    &#125;
+&#125;
+
+public void measurementsChanged()&#123;
+    notifyObservers();
+&#125;
+
+public void setMeasurements(float temperature , float humidity , float pressure)&#123;
+    //状态改变，调用measurementsChanged，后调用notifyObservers，通知观察则更新
+    this.temperature = temperature;
+    this.humidity = humidity;
+    this.pressure = pressure;
+    measurementsChanged();
+&#125;
+&#125;
+</code></pre>
+<p><strong>观察者接口</strong></p>
+<pre><code>public interface Observer &#123;
+
+public void update(Subject subject);&#125;
+</code></pre>
+<p><strong>观察者实现类</strong></p>
+<pre><code>public class CurrentConditionsDisplay implements Observer ,DisplayElement &#123;
+//实现Observer 可获得通知
+
+private float tempeature;
+private float humidity;
+private Subject weatherData;
+
+public CurrentConditionsDisplay(WeatherData weatherData) &#123;
+    this.weatherData = weatherData;
+    weatherData.registerObserver(this);
+&#125;
+
+@Override
+public void display() &#123;
+    System.out.println(&quot;Current conditions: &quot; + tempeature + &quot;F degrees and &quot; + humidity + 
+            &quot;% humidity&quot;);
+&#125;
+
+@Override
+public void update(Subject subject) &#123;
+    if (subject instanceof WeatherData)&#123;
+        WeatherData weatherData = (WeatherData) subject;
+        this.tempeature = weatherData.getTemperature();
+        this.humidity = weatherData.getHumidity();
+        display();
+    &#125;
+&#125;
+</code></pre>
+
+    </div>
+
+    <div>全文完。</div>
+  </article>
+  <div class="toc-container">
+    
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F"><span class="toc-text">什么是观察者模式</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F"><span class="toc-text">定义观察者模式</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%9E%E4%BE%8B"><span class="toc-text">实例</span></a></li></ol>
+  </div>
+
+
+  </div>
+</div>
+<div class="copyright">
+    <span>本作品采用</span>
+    <a href="https://creativecommons.org/licenses/by/4.0/">知识共享署名 4.0 国际许可协议</a>
+    <span>进行许可。 转载时请注明原文链接。</span>
+</div>
+<div class="share" style="width: 100%;">
+
+
+</div>
+
+  
+    <div class="post-nav">
+      <div class="post-nav-item post-nav-next">
+        
+          <span>〈 </span>
+          <a href="/2016/11/16/login-v2ex/" rel="next" title="Android模拟登录V2EX">
+          Android模拟登录V2EX
+          </a>
+        
+      </div>
+  
+      <div class="post-nav-item post-nav-prev">
+          
+          <a href="/2017/11/01/Map-navigation/" rel="prev" title="Android跳转第三方地图进行导航">
+            Android跳转第三方地图进行导航
+          </a>
+          <span>〉</span>
+        
+      </div>
+    </div>
+  
+
+  <section class="disqus-comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </section>
+
+  <script>
+    var disqus_shortname = 'sooola';
+    
+    var disqus_url = 'https://sooola.github.io/2017/01/04/Observer-Pattern/';
+    
+    (function(){
+      var dsq = document.createElement('script');
+      dsq.type = 'text/javascript';
+      dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+
+  <script id="dsq-count-scr" src="//sooola.disqus.com/count.js" async></script>
+
+
+
+    </div>
+
+    
+
+  </div>
+  <footer class="footer text-center">
+    <div id="bottom-inner">
+        <a class="bottom-item" href="https://sooola.github.io/">首页</a> |
+        <a class="bottom-item" href="https://sooola.github.io/" target="_blank">主站</a> |
+        <a class="bottom-item" href="https://github.com/sooola" target="_blank">GitHub</a> |
+        <a class="bottom-item" href="https://hexo.io" target="_blank">Powered by hexo</a> |
+        <a class="bottom-item" href="https://github.com/KevinOfNeu/hexo-theme-xoxo" target="_blank">Theme xoxo</a>
+    </div>
+</footer>
+  
+
+<script>
+  (function(window, document, undefined) {
+
+    var timer = null;
+
+    function returnTop() {
+      cancelAnimationFrame(timer);
+      timer = requestAnimationFrame(function fn() {
+        var oTop = document.body.scrollTop || document.documentElement.scrollTop;
+        if (oTop > 0) {
+          document.body.scrollTop = document.documentElement.scrollTop = oTop - 50;
+          timer = requestAnimationFrame(fn);
+        } else {
+          cancelAnimationFrame(timer);
+        }
+      });
+    }
+
+    var hearts = [];
+    window.requestAnimationFrame = (function() {
+      return window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function(callback) {
+          setTimeout(callback, 1000 / 60);
+        }
+    })();
+    init();
+
+    function init() {
+      css(".heart{z-index:9999;width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: absolute;}.heart:after{top: -5px;}.heart:before{left: -5px;}");
+      attachEvent();
+      gameloop();
+      addMenuEvent();
+    }
+
+    function gameloop() {
+      for (var i = 0; i < hearts.length; i++) {
+        if (hearts[i].alpha <= 0) {
+          document.body.removeChild(hearts[i].el);
+          hearts.splice(i, 1);
+          continue;
+        }
+        hearts[i].y--;
+        hearts[i].scale += 0.004;
+        hearts[i].alpha -= 0.013;
+        hearts[i].el.style.cssText = "left:" + hearts[i].x + "px;top:" + hearts[i].y + "px;opacity:" + hearts[i].alpha + ";transform:scale(" + hearts[i].scale + "," + hearts[i].scale + ") rotate(45deg);background:" + hearts[i].color;
+      }
+      requestAnimationFrame(gameloop);
+    }
+
+    /**
+     * 给logo设置点击事件
+     * 
+     * - 回到顶部
+     * - 出现爱心
+     */
+    function attachEvent() {
+      var old = typeof window.onclick === "function" && window.onclick;
+      var logo = document.getElementById("logo");
+      if (logo) {
+        logo.onclick = function(event) {
+          returnTop();
+          old && old();
+          createHeart(event);
+        }
+      }
+      
+    }
+
+    function createHeart(event) {
+      var d = document.createElement("div");
+      d.className = "heart";
+      hearts.push({
+        el: d,
+        x: event.clientX - 5,
+        y: event.clientY - 5,
+        scale: 1,
+        alpha: 1,
+        color: randomColor()
+      });
+      document.body.appendChild(d);
+    }
+
+    function css(css) {
+      var style = document.createElement("style");
+      style.type = "text/css";
+      try {
+        style.appendChild(document.createTextNode(css));
+      } catch (ex) {
+        style.styleSheet.cssText = css;
+      }
+      document.getElementsByTagName('head')[0].appendChild(style);
+    }
+
+    function randomColor() {
+      // return "rgb(" + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + ")";
+      return "#F44336";
+    }
+
+    function addMenuEvent() {
+      var menu = document.getElementById('menu-main-post');
+      if (menu) {
+        var toc = document.getElementById('toc');
+        if (toc) {
+          menu.onclick = function() {
+            if (toc) {
+              if (toc.style.display == 'block') {
+                toc.style.display = 'none';
+              } else {
+                toc.style.display = 'block';
+              }
+            }
+          };
+        } else {
+          menu.style.display = 'none';
+        }
+      }
+    }
+
+  })(window, document);
+</script>
+
+  
+
+
+
+</body>
+</html>

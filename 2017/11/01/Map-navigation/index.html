@@ -1,0 +1,348 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#202020"/>
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+  
+  
+    <meta name="keywords" content="android," />
+  
+
+  
+    <meta name="description" content="sola的博客,java,Android,游戏，动漫，日剧" />
+  
+  
+  <link rel="icon" type="image/x-icon" href="/logo.png">
+  <title>Android跳转第三方地图进行导航 [ sooola的博客 ]</title>
+  
+    <!-- stylesheets list from config.yml -->
+    
+      <link rel="stylesheet" href="//cdn.bootcss.com/pure/1.0.0/pure-min.css">
+    
+      <link rel="stylesheet" href="/css/xoxo.css">
+    
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  <div class="nav-container">
+    <nav class="home-menu pure-menu pure-menu-horizontal">
+  <a class="pure-menu-heading" href="/">
+    <img class="avatar" src="https://sooola.github.io/images/logo.png">
+    <span class="title">sooola的博客</span>
+  </a>
+
+  <ul class="pure-menu-list clearfix">
+      
+          
+            <li class="pure-menu-item"><a href="/" class="pure-menu-link">首页</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/archives" class="pure-menu-link">归档</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/tags" class="pure-menu-link">标签</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/search" class="pure-menu-link">搜索</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="https://github.com/sooola" class="pure-menu-link">关于</a></li>
+          
+      
+  </ul>
+   
+</nav>
+  </div>
+
+  <div class="container" id="content-outer">
+    <div class="inner" id="content-inner">
+      <div class="post-container">
+  <article class="post" id="post">
+    <header class="post-header text-center">
+      <h1 class="title">
+        Android跳转第三方地图进行导航
+      </h1>
+      <span>
+        
+        <time class="time" datetime="2017-11-01T14:44:21.000Z">
+        2017-11-01
+      </time>
+        
+      </span>
+      <span class="slash">/</span>
+      <span class="post-meta">
+      <span class="post-tags">
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/" rel="tag">android</a></li></ul>
+      </span>
+    </span>
+      <span class="slash">/</span>
+    </header>
+
+    <div class="post-content">
+      <p>项目要实现跳入第三方APP实现导航功能，在APP内已经嵌入高德地图SDK,可以获取定位的经度。</p>
+<h3 id="坐标系的转换"><a href="#坐标系的转换" class="headerlink" title="坐标系的转换"></a>坐标系的转换</h3><hr>
+<p>要跳转到不同的地图，先要保证使用同一个坐标系统，不然会出现较大的偏移，地图APP坐标系统情况如下</p>
+<table>
+<thead>
+<tr>
+<th>API</th>
+<th>坐标系</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>百度地图</td>
+<td>百度坐标</td>
+</tr>
+<tr>
+<td>腾讯搜搜地图</td>
+<td>火星坐标</td>
+</tr>
+<tr>
+<td>高德MapABC地图</td>
+<td>火星坐标</td>
+</tr>
+<tr>
+<td>搜狐搜狗地图</td>
+<td>搜狗坐标</td>
+</tr>
+</tbody></table>
+<p>坐标体系说明，及转换可参考：<a href="http://blog.csdn.net/a13570320979/article/details/51366355">http://blog.csdn.net/a13570320979/article/details/51366355</a></p>
+<p>使用如下工具类，就可以进行坐标系的转换</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br></pre></td><td class="code"><pre><span class="line">public class GPSUtil &#123;</span><br><span class="line">    public static double pi = 3.1415926535897932384626;</span><br><span class="line">    public static double x_pi = 3.14159265358979324 * 3000.0 / 180.0;</span><br><span class="line">    public static double a = 6378245.0;</span><br><span class="line">    public static double ee = 0.00669342162296594323;</span><br><span class="line"></span><br><span class="line">    public static double transformLat(double x, double y) &#123;</span><br><span class="line">        double ret = -100.0 + 2.0 * x + 3.0 * y + 0.2 * y * y + 0.1 * x * y</span><br><span class="line">                + 0.2 * Math.sqrt(Math.abs(x));</span><br><span class="line">        ret += (20.0 * Math.sin(6.0 * x * pi) + 20.0 * Math.sin(2.0 * x * pi)) * 2.0 / 3.0;</span><br><span class="line">        ret += (20.0 * Math.sin(y * pi) + 40.0 * Math.sin(y / 3.0 * pi)) * 2.0 / 3.0;</span><br><span class="line">        ret += (160.0 * Math.sin(y / 12.0 * pi) + 320 * Math.sin(y * pi / 30.0)) * 2.0 / 3.0;</span><br><span class="line">        return ret;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static double transformLon(double x, double y) &#123;</span><br><span class="line">        double ret = 300.0 + x + 2.0 * y + 0.1 * x * x + 0.1 * x * y + 0.1</span><br><span class="line">                * Math.sqrt(Math.abs(x));</span><br><span class="line">        ret += (20.0 * Math.sin(6.0 * x * pi) + 20.0 * Math.sin(2.0 * x * pi)) * 2.0 / 3.0;</span><br><span class="line">        ret += (20.0 * Math.sin(x * pi) + 40.0 * Math.sin(x / 3.0 * pi)) * 2.0 / 3.0;</span><br><span class="line">        ret += (150.0 * Math.sin(x / 12.0 * pi) + 300.0 * Math.sin(x / 30.0</span><br><span class="line">                * pi)) * 2.0 / 3.0;</span><br><span class="line">        return ret;</span><br><span class="line">    &#125;</span><br><span class="line">    public static double[] transform(double lat, double lon) &#123;</span><br><span class="line">        if (outOfChina(lat, lon)) &#123;</span><br><span class="line">            return new double[]&#123;lat,lon&#125;;</span><br><span class="line">        &#125;</span><br><span class="line">        double dLat = transformLat(lon - 105.0, lat - 35.0);</span><br><span class="line">        double dLon = transformLon(lon - 105.0, lat - 35.0);</span><br><span class="line">        double radLat = lat / 180.0 * pi;</span><br><span class="line">        double magic = Math.sin(radLat);</span><br><span class="line">        magic = 1 - ee * magic * magic;</span><br><span class="line">        double sqrtMagic = Math.sqrt(magic);</span><br><span class="line">        dLat = (dLat * 180.0) / ((a * (1 - ee)) / (magic * sqrtMagic) * pi);</span><br><span class="line">        dLon = (dLon * 180.0) / (a / sqrtMagic * Math.cos(radLat) * pi);</span><br><span class="line">        double mgLat = lat + dLat;</span><br><span class="line">        double mgLon = lon + dLon;</span><br><span class="line">        return new double[]&#123;mgLat,mgLon&#125;;</span><br><span class="line">    &#125;</span><br><span class="line">    public static boolean outOfChina(double lat, double lon) &#123;</span><br><span class="line">        if (lon &lt; 72.004 || lon &gt; 137.8347)</span><br><span class="line">            return true;</span><br><span class="line">        if (lat &lt; 0.8293 || lat &gt; 55.8271)</span><br><span class="line">            return true;</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line">    /**</span><br><span class="line">     * 84 to 火星坐标系 (GCJ-02) World Geodetic System ==&gt; Mars Geodetic System</span><br><span class="line">     *</span><br><span class="line">     * @param lat</span><br><span class="line">     * @param lon</span><br><span class="line">     * @return</span><br><span class="line">     */</span><br><span class="line">    public static double[] gps84_To_Gcj02(double lat, double lon) &#123;</span><br><span class="line">        if (outOfChina(lat, lon)) &#123;</span><br><span class="line">            return new double[]&#123;lat,lon&#125;;</span><br><span class="line">        &#125;</span><br><span class="line">        double dLat = transformLat(lon - 105.0, lat - 35.0);</span><br><span class="line">        double dLon = transformLon(lon - 105.0, lat - 35.0);</span><br><span class="line">        double radLat = lat / 180.0 * pi;</span><br><span class="line">        double magic = Math.sin(radLat);</span><br><span class="line">        magic = 1 - ee * magic * magic;</span><br><span class="line">        double sqrtMagic = Math.sqrt(magic);</span><br><span class="line">        dLat = (dLat * 180.0) / ((a * (1 - ee)) / (magic * sqrtMagic) * pi);</span><br><span class="line">        dLon = (dLon * 180.0) / (a / sqrtMagic * Math.cos(radLat) * pi);</span><br><span class="line">        double mgLat = lat + dLat;</span><br><span class="line">        double mgLon = lon + dLon;</span><br><span class="line">        return new double[]&#123;mgLat, mgLon&#125;;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * * 火星坐标系 (GCJ-02) to 84 * * @param lon * @param lat * @return</span><br><span class="line">     * */</span><br><span class="line">    public static double[] gcj02_To_Gps84(double lat, double lon) &#123;</span><br><span class="line">        double[] gps = transform(lat, lon);</span><br><span class="line">        double lontitude = lon * 2 - gps[1];</span><br><span class="line">        double latitude = lat * 2 - gps[0];</span><br><span class="line">        return new double[]&#123;latitude, lontitude&#125;;</span><br><span class="line">    &#125;</span><br><span class="line">    /**</span><br><span class="line">     * 火星坐标系 (GCJ-02) 与百度坐标系 (BD-09) 的转换算法 将 GCJ-02 坐标转换成 BD-09 坐标</span><br><span class="line">     *</span><br><span class="line">     * @param lat</span><br><span class="line">     * @param lon</span><br><span class="line">     */</span><br><span class="line">    public static double[] gcj02_To_Bd09(double lat, double lon) &#123;</span><br><span class="line">        double x = lon, y = lat;</span><br><span class="line">        double z = Math.sqrt(x * x + y * y) + 0.00002 * Math.sin(y * x_pi);</span><br><span class="line">        double theta = Math.atan2(y, x) + 0.000003 * Math.cos(x * x_pi);</span><br><span class="line">        double tempLon = z * Math.cos(theta) + 0.0065;</span><br><span class="line">        double tempLat = z * Math.sin(theta) + 0.006;</span><br><span class="line">        double[] gps = &#123;tempLat,tempLon&#125;;</span><br><span class="line">        return gps;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * * 火星坐标系 (GCJ-02) 与百度坐标系 (BD-09) 的转换算法 * * 将 BD-09 坐标转换成GCJ-02 坐标 * * @param</span><br><span class="line">     * bd_lat * @param bd_lon * @return</span><br><span class="line">     */</span><br><span class="line">    public static double[] bd09_To_Gcj02(double lat, double lon) &#123;</span><br><span class="line">        double x = lon - 0.0065, y = lat - 0.006;</span><br><span class="line">        double z = Math.sqrt(x * x + y * y) - 0.00002 * Math.sin(y * x_pi);</span><br><span class="line">        double theta = Math.atan2(y, x) - 0.000003 * Math.cos(x * x_pi);</span><br><span class="line">        double tempLon = z * Math.cos(theta);</span><br><span class="line">        double tempLat = z * Math.sin(theta);</span><br><span class="line">        double[] gps = &#123;tempLat,tempLon&#125;;</span><br><span class="line">        return gps;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**将gps84转为bd09</span><br><span class="line">     * @param lat</span><br><span class="line">     * @param lon</span><br><span class="line">     * @return</span><br><span class="line">     */</span><br><span class="line">    public static double[] gps84_To_bd09(double lat,double lon)&#123;</span><br><span class="line">        double[] gcj02 = gps84_To_Gcj02(lat,lon);</span><br><span class="line">        double[] bd09 = gcj02_To_Bd09(gcj02[0],gcj02[1]);</span><br><span class="line">        return bd09;</span><br><span class="line">    &#125;</span><br><span class="line">    public static double[] bd09_To_gps84(double lat,double lon)&#123;</span><br><span class="line">        double[] gcj02 = bd09_To_Gcj02(lat, lon);</span><br><span class="line">        double[] gps84 = gcj02_To_Gps84(gcj02[0], gcj02[1]);</span><br><span class="line">        //保留小数点后六位</span><br><span class="line">        gps84[0] = retain6(gps84[0]);</span><br><span class="line">        gps84[1] = retain6(gps84[1]);</span><br><span class="line">        return gps84;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**保留小数点后六位</span><br><span class="line">     * @param num</span><br><span class="line">     * @return</span><br><span class="line">     */</span><br><span class="line">    private static double retain6(double num)&#123;</span><br><span class="line">        String result = String .format(&quot;%.6f&quot;, num);</span><br><span class="line">        return Double.valueOf(result);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="跳转实现"><a href="#跳转实现" class="headerlink" title="跳转实现"></a>跳转实现</h3><hr>
+<p>跳转工具类</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">public class MapUtil &#123;</span><br><span class="line">   </span><br><span class="line">    public final static String BAIDU_PKG = &quot;com.baidu.BaiduMap&quot;; //百度地图的包名</span><br><span class="line"></span><br><span class="line">    public final static String GAODE_PKG = &quot;com.autonavi.minimap&quot;;//高德地图的包名</span><br><span class="line"></span><br><span class="line">    public static void openGaoDe(Context context, double latitude, double longitude) &#123;</span><br><span class="line">        Intent intent = new Intent(&quot;android.intent.action.VIEW&quot;, android.net.Uri.parse(&quot;androidamap://navi?sourceApplication=你的APP名称&amp;lat=&quot; + latitude + &quot;&amp;lon=&quot; + longitude + &quot;&amp;dev=0&quot;));</span><br><span class="line">        intent.setPackage(&quot;com.autonavi.minimap&quot;);</span><br><span class="line">        context.startActivity(intent);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static void openBaidu(Context context, MarkerOptions markerOption) &#123;</span><br><span class="line">        Intent i1 = new Intent();</span><br><span class="line">        double[] position = GPSUtil.gcj02_To_Bd09(markerOption.getPosition().latitude, markerOption.getPosition().longitude);</span><br><span class="line">        i1.setData(Uri.parse(&quot;baidumap://map/geocoder?location=&quot; + position[0] + &quot;,&quot; + position[1]));</span><br><span class="line">        context.startActivity(i1);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 检测地图应用是否安装</span><br><span class="line">     *</span><br><span class="line">     * @param context</span><br><span class="line">     * @param packagename</span><br><span class="line">     * @return</span><br><span class="line">     */</span><br><span class="line">    public static boolean checkMapAppsIsExist(Context context, String packagename) &#123;</span><br><span class="line">        PackageInfo packageInfo;</span><br><span class="line">        try &#123;</span><br><span class="line">            packageInfo = context.getPackageManager().getPackageInfo(packagename, 0);</span><br><span class="line">        &#125; catch (Exception e) &#123;</span><br><span class="line">            packageInfo = null;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        if (packageInfo == null) &#123;</span><br><span class="line">            return false;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            return true;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>完整代码</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br></pre></td><td class="code"><pre><span class="line">public class MapActivity extends NewBaseActivity &#123;</span><br><span class="line"></span><br><span class="line">    public static Intent getIntent(Context context) &#123;</span><br><span class="line">        Intent intent = new Intent(context, MapActivity.class);</span><br><span class="line">        return intent;</span><br><span class="line">    &#125;</span><br><span class="line">    private AMap aMap;</span><br><span class="line">    private Marker marker;</span><br><span class="line">    private MarkerOptions markerOption;</span><br><span class="line">    private MapView mMapView;</span><br><span class="line">    private LatLng mLatLng = new LatLng(23.111074,114.414759);</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    protected int getLayoutId() &#123;</span><br><span class="line">        return R.layout.activity_map;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    protected void initViews(Bundle savedInstanceState) &#123;</span><br><span class="line">        //获取地图控件引用</span><br><span class="line">        mMapView = (MapView) findViewById(R.id.map);</span><br><span class="line">        //在activity执行onCreate时执行mMapView.onCreate(savedInstanceState)，创建地图</span><br><span class="line">        mMapView.onCreate(savedInstanceState);</span><br><span class="line">        aMap = mMapView.getMap();</span><br><span class="line"></span><br><span class="line">        changeCamera(</span><br><span class="line">                CameraUpdateFactory.newCameraPosition(new CameraPosition(</span><br><span class="line">                        mLatLng, 18, 30, 30)));</span><br><span class="line">        addMarkToMap();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private void addMarkToMap() &#123;</span><br><span class="line">        markerOption = new MarkerOptions().icon(BitmapDescriptorFactory</span><br><span class="line">                .defaultMarker(BitmapDescriptorFactory.HUE_AZURE))</span><br><span class="line">                .position(mLatLng)</span><br><span class="line">                .snippet(&quot;lala&quot;)</span><br><span class="line">                .draggable(false);</span><br><span class="line">        marker = aMap.addMarker(markerOption);</span><br><span class="line">        marker.showInfoWindow();</span><br><span class="line">        aMap.setOnMarkerClickListener(new AMap.OnMarkerClickListener() &#123;</span><br><span class="line">            @Override</span><br><span class="line">            public boolean onMarkerClick(Marker marker) &#123;</span><br><span class="line">                if (MapUtil.checkMapAppsIsExist(MapActivity.this,MapUtil.GAODE_PKG))&#123;</span><br><span class="line">                    DialogUtil.showConfirmationDialog(MapActivity.this, &quot;打开地图&quot;, &quot;是否打开高德地图进行导航？&quot;, new DialogUtil.OnConfirmCallback() &#123;</span><br><span class="line">                        @Override</span><br><span class="line">                        public void onConfirm() &#123;</span><br><span class="line">                            MapUtil.openGaoDe(MapActivity.this ,markerOption);</span><br><span class="line">                        &#125;</span><br><span class="line"></span><br><span class="line">                        @Override</span><br><span class="line">                        public void onCancel(DialogInterface dialog) &#123;</span><br><span class="line"></span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;);</span><br><span class="line">                &#125;else if (MapUtil.checkMapAppsIsExist(MapActivity.this , MapUtil.BAIDU_PKG)) &#123;</span><br><span class="line">                    DialogUtil.showConfirmationDialog(MapActivity.this, &quot;打开地图&quot;, &quot;是否打开百度地图进行导航？&quot;, new DialogUtil.OnConfirmCallback() &#123;</span><br><span class="line">                        @Override</span><br><span class="line">                        public void onConfirm() &#123;</span><br><span class="line">                            MapUtil.openBaidu(MapActivity.this ,markerOption);</span><br><span class="line">                        &#125;</span><br><span class="line"></span><br><span class="line">                        @Override</span><br><span class="line">                        public void onCancel(DialogInterface dialog) &#123;</span><br><span class="line"></span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;);</span><br><span class="line">                &#125;else &#123;</span><br><span class="line">                    ToastUtil.showShort(&quot;请安装地图&quot;);</span><br><span class="line">                &#125;</span><br><span class="line">                return false;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    /**</span><br><span class="line">     * 根据动画按钮状态，调用函数animateCamera或moveCamera来改变可视区域</span><br><span class="line">     */</span><br><span class="line">    private void changeCamera(CameraUpdate update) &#123;</span><br><span class="line">        aMap.moveCamera(update);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    protected void initData() &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    protected void onDestroy() &#123;</span><br><span class="line">        super.onDestroy();</span><br><span class="line">        //在activity执行onDestroy时执行mMapView.onDestroy()，销毁地图</span><br><span class="line">        mMapView.onDestroy();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    protected void onResume() &#123;</span><br><span class="line">        super.onResume();</span><br><span class="line">        //在activity执行onResume时执行mMapView.onResume ()，重新绘制加载地图</span><br><span class="line">        mMapView.onResume();</span><br><span class="line">    &#125;</span><br><span class="line">    @Override</span><br><span class="line">    protected void onPause() &#123;</span><br><span class="line">        super.onPause();</span><br><span class="line">        //在activity执行onPause时执行mMapView.onPause ()，暂停地图的绘制</span><br><span class="line">        mMapView.onPause();</span><br><span class="line">    &#125;</span><br><span class="line">    @Override</span><br><span class="line">    protected void onSaveInstanceState(Bundle outState) &#123;</span><br><span class="line">        super.onSaveInstanceState(outState);</span><br><span class="line">        //在activity执行onSaveInstanceState时执行mMapView.onSaveInstanceState (outState)，保存地图当前的状态</span><br><span class="line">        mMapView.onSaveInstanceState(outState);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>参考文章：<br><a href="http://blog.csdn.net/meegomeego/article/details/39927017">http://blog.csdn.net/meegomeego/article/details/39927017</a><br><a href="http://www.jianshu.com/p/ea092e243aaa">http://www.jianshu.com/p/ea092e243aaa</a><br><a href="http://blog.csdn.net/a13570320979/article/details/51366355">http://blog.csdn.net/a13570320979/article/details/51366355</a></p>
+
+    </div>
+
+    <div>全文完。</div>
+  </article>
+  <div class="toc-container">
+    
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9D%90%E6%A0%87%E7%B3%BB%E7%9A%84%E8%BD%AC%E6%8D%A2"><span class="toc-text">坐标系的转换</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B7%B3%E8%BD%AC%E5%AE%9E%E7%8E%B0"><span class="toc-text">跳转实现</span></a></li></ol>
+  </div>
+
+
+  </div>
+</div>
+<div class="copyright">
+    <span>本作品采用</span>
+    <a href="https://creativecommons.org/licenses/by/4.0/">知识共享署名 4.0 国际许可协议</a>
+    <span>进行许可。 转载时请注明原文链接。</span>
+</div>
+<div class="share" style="width: 100%;">
+
+
+</div>
+
+  
+    <div class="post-nav">
+      <div class="post-nav-item post-nav-next">
+        
+          <span>〈 </span>
+          <a href="/2017/01/04/Observer-Pattern/" rel="next" title="观察者模式笔记">
+          观察者模式笔记
+          </a>
+        
+      </div>
+  
+      <div class="post-nav-item post-nav-prev">
+          
+          <a href="/2019/01/17/Multi-channel/" rel="prev" title="多渠道打包，不同的包名">
+            多渠道打包，不同的包名
+          </a>
+          <span>〉</span>
+        
+      </div>
+    </div>
+  
+
+  <section class="disqus-comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </section>
+
+  <script>
+    var disqus_shortname = 'sooola';
+    
+    var disqus_url = 'https://sooola.github.io/2017/11/01/Map-navigation/';
+    
+    (function(){
+      var dsq = document.createElement('script');
+      dsq.type = 'text/javascript';
+      dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+
+  <script id="dsq-count-scr" src="//sooola.disqus.com/count.js" async></script>
+
+
+
+    </div>
+
+    
+
+  </div>
+  <footer class="footer text-center">
+    <div id="bottom-inner">
+        <a class="bottom-item" href="https://sooola.github.io/">首页</a> |
+        <a class="bottom-item" href="https://sooola.github.io/" target="_blank">主站</a> |
+        <a class="bottom-item" href="https://github.com/sooola" target="_blank">GitHub</a> |
+        <a class="bottom-item" href="https://hexo.io" target="_blank">Powered by hexo</a> |
+        <a class="bottom-item" href="https://github.com/KevinOfNeu/hexo-theme-xoxo" target="_blank">Theme xoxo</a>
+    </div>
+</footer>
+  
+
+<script>
+  (function(window, document, undefined) {
+
+    var timer = null;
+
+    function returnTop() {
+      cancelAnimationFrame(timer);
+      timer = requestAnimationFrame(function fn() {
+        var oTop = document.body.scrollTop || document.documentElement.scrollTop;
+        if (oTop > 0) {
+          document.body.scrollTop = document.documentElement.scrollTop = oTop - 50;
+          timer = requestAnimationFrame(fn);
+        } else {
+          cancelAnimationFrame(timer);
+        }
+      });
+    }
+
+    var hearts = [];
+    window.requestAnimationFrame = (function() {
+      return window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function(callback) {
+          setTimeout(callback, 1000 / 60);
+        }
+    })();
+    init();
+
+    function init() {
+      css(".heart{z-index:9999;width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: absolute;}.heart:after{top: -5px;}.heart:before{left: -5px;}");
+      attachEvent();
+      gameloop();
+      addMenuEvent();
+    }
+
+    function gameloop() {
+      for (var i = 0; i < hearts.length; i++) {
+        if (hearts[i].alpha <= 0) {
+          document.body.removeChild(hearts[i].el);
+          hearts.splice(i, 1);
+          continue;
+        }
+        hearts[i].y--;
+        hearts[i].scale += 0.004;
+        hearts[i].alpha -= 0.013;
+        hearts[i].el.style.cssText = "left:" + hearts[i].x + "px;top:" + hearts[i].y + "px;opacity:" + hearts[i].alpha + ";transform:scale(" + hearts[i].scale + "," + hearts[i].scale + ") rotate(45deg);background:" + hearts[i].color;
+      }
+      requestAnimationFrame(gameloop);
+    }
+
+    /**
+     * 给logo设置点击事件
+     * 
+     * - 回到顶部
+     * - 出现爱心
+     */
+    function attachEvent() {
+      var old = typeof window.onclick === "function" && window.onclick;
+      var logo = document.getElementById("logo");
+      if (logo) {
+        logo.onclick = function(event) {
+          returnTop();
+          old && old();
+          createHeart(event);
+        }
+      }
+      
+    }
+
+    function createHeart(event) {
+      var d = document.createElement("div");
+      d.className = "heart";
+      hearts.push({
+        el: d,
+        x: event.clientX - 5,
+        y: event.clientY - 5,
+        scale: 1,
+        alpha: 1,
+        color: randomColor()
+      });
+      document.body.appendChild(d);
+    }
+
+    function css(css) {
+      var style = document.createElement("style");
+      style.type = "text/css";
+      try {
+        style.appendChild(document.createTextNode(css));
+      } catch (ex) {
+        style.styleSheet.cssText = css;
+      }
+      document.getElementsByTagName('head')[0].appendChild(style);
+    }
+
+    function randomColor() {
+      // return "rgb(" + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + ")";
+      return "#F44336";
+    }
+
+    function addMenuEvent() {
+      var menu = document.getElementById('menu-main-post');
+      if (menu) {
+        var toc = document.getElementById('toc');
+        if (toc) {
+          menu.onclick = function() {
+            if (toc) {
+              if (toc.style.display == 'block') {
+                toc.style.display = 'none';
+              } else {
+                toc.style.display = 'block';
+              }
+            }
+          };
+        } else {
+          menu.style.display = 'none';
+        }
+      }
+    }
+
+  })(window, document);
+</script>
+
+  
+
+
+
+</body>
+</html>
