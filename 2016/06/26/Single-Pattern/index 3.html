@@ -11,7 +11,7 @@
   <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
   
   
-    <meta name="keywords" content="电影," />
+    <meta name="keywords" content="android,设计模式," />
   
 
   
@@ -19,7 +19,7 @@
   
   
   <link rel="icon" type="image/x-icon" href="/logo.png">
-  <title>下一个素熙 [ sooola的博客 ]</title>
+  <title>单例模式学习笔记 [ sooola的博客 ]</title>
   
     <!-- stylesheets list from config.yml -->
     
@@ -72,29 +72,77 @@
   <article class="post" id="post">
     <header class="post-header text-center">
       <h1 class="title">
-        下一个素熙
+        单例模式学习笔记
       </h1>
       <span>
         
-        <time class="time" datetime="2023-07-17T17:20:00.000Z">
-        2023-07-17
+        <time class="time" datetime="2016-06-26T14:38:41.000Z">
+        2016-06-26
       </time>
         
       </span>
       <span class="slash">/</span>
       <span class="post-meta">
       <span class="post-tags">
-        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%94%B5%E5%BD%B1/" rel="tag">电影</a></li></ul>
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/" rel="tag">android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li></ul>
       </span>
     </span>
       <span class="slash">/</span>
     </header>
 
     <div class="post-content">
-      <p>周末看完下一个素熙，拍得很牛逼，感觉只有韩国，日本才能拍出职场的压抑，在整个剧中，你找不到一个明确的加害者，但结果是底层承受了巨大的压力。电话客户的目的是赚用户的钱，让他别取消套餐，能换更贵的套餐就更好。</p>
-<p>在这个前提下，客户无论怎么屌你，你也不能反抗，客户成了高高在上的存在，你一反抗，公司就会 pua你，公司只是想赚客户的钱，公司不关心你的感受。</p>
-<p>除了公司外，其实没有任何人关心你，父母希望你有稳定的工作，要是你觉得工作辛苦，那是你的问题，要你自己忍耐，克服，对于父母来说，稳定的工作是最重要的，你的感受是次要的。学校的班主任只关心就业率，就业率达标才能涨工资，学校才能继续办下去。教育局根据学习就业率分配资金，就业率好的学校就可以获得更多的钱。开心，快乐，这些东西，不能作为一个指标，在 Excel 表格上体现。</p>
-<p>现在社会整个体制是上层商人、有钱人设计，他们设计这套东西来维护自己的利益，底层人就是应该活在绝望和痛苦之中，上层人用钱这种工具控制底层的人民，这不是单一谁的问题，只要我们活在资本主义，就无法逃避。</p>
+      <h2 id="单例模式的作用"><a href="#单例模式的作用" class="headerlink" title="单例模式的作用"></a>单例模式的作用</h2><p> 有些对象的实例只需要一个，如缓存，数据库等，如果有多个实例就会产生许多问题，<strong>单例模式确保了类只有一个实例，并给了我们一个全局的访问点</strong>。<br>相对与全局变量，利用单例模式可以延迟创建对象，</p>
+<h3 id="一个简单的单例模式"><a href="#一个简单的单例模式" class="headerlink" title="一个简单的单例模式"></a>一个简单的单例模式</h3><pre><code>public class Singleton &#123;
+    private static Singleton uniqueInstance;
+    
+    private Singleton()&#123;&#125;;
+    
+    public static Singleton getInstance()&#123;
+        if (null == uniqueInstance)&#123;
+            uniqueInstance = new Singleton();
+        &#125;
+        return uniqueInstance;
+    &#125;
+&#125;
+</code></pre>
+<p>单例模式创建步骤如下：  </p>
+<ol>
+<li>利用一个<strong>静态</strong>变量来记录Singleton类的唯一实例。  </li>
+<li>把构造器声明为私有的，只要在Singleton类内部才可以调用。</li>
+<li>用getInstance()方法实例化对象，并返回这个实例。</li>
+</ol>
+<h3 id="单例模式多线程的问题"><a href="#单例模式多线程的问题" class="headerlink" title="单例模式多线程的问题"></a>单例模式多线程的问题</h3><p>如果我们开启多个线程，调用getInstance()方法，可能多有多个线程同时进入这个方法，这样就创建了不同的实例。</p>
+<ul>
+<li>getInstance()改为同步方法<br>public static synchronized Singleton getInstance(){}<br>通过增加 synchronized到getInstance()方法中，迫使每个线程进入到这个方法之前，需要等待别的线程离开该方法，即不会有两个线程可以同时进入该方法。<br>缺点：只有第一次调用创建实例时才需要同步，之后每次这个方法，同步都是一种累赘，一个同步方法可能造成程序执行效率下降100倍。</li>
+</ul>
+<h2 id="改善多线程"><a href="#改善多线程" class="headerlink" title="改善多线程"></a>改善多线程</h2><p>1.如果调用getInstance()对应用程序不是很关键，则加上synchronized。<br>2.如果getInstance()比较频繁，使用”急切”创建实例，而不使用延迟做法。  </p>
+<pre><code>private  static Singleton uniqueInstance = new Singleton();
+
+private Singleton()&#123;&#125;;
+
+public static synchronized Singleton getInstance()&#123;
+    return uniqueInstance;
+&#125;
+</code></pre>
+<p>使用这个方法时，JVM在加载这个类时马上创建此类的单例实例，JVM保证任何线程访问uniqueInstance静态变量前，一定会创建此实例。<br>3.用”双重检查加锁”<br>首先检查实例是否已经创建了，如果没有创建，才进行同步，这样只有第一次才会同步。</p>
+<pre><code>private volatile static Singleton uniqueInstance;
+//保证了不同线程对这个变量进行操作时的可见性，即一个线程修改了某个变量的值，这新值对其他线程来说是立即可见的
+
+private Singleton()&#123;&#125;;
+
+public static synchronized Singleton getInstance()&#123;
+    if (null == uniqueInstance)&#123;
+        //如果不存在进入同步
+        synchronized (Singleton.class) &#123;
+        //再次检查，如果不存在才创建
+            if ( null == uniqueInstance)&#123;
+                uniqueInstance = new Singleton();
+            &#125;
+        &#125;
+    &#125;
+    return uniqueInstance;
+&#125;
+</code></pre>
 
     </div>
 
@@ -102,6 +150,11 @@
   </article>
   <div class="toc-container">
     
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E7%9A%84%E4%BD%9C%E7%94%A8"><span class="toc-text">单例模式的作用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F"><span class="toc-text">一个简单的单例模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-text">单例模式多线程的问题</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%94%B9%E5%96%84%E5%A4%9A%E7%BA%BF%E7%A8%8B"><span class="toc-text">改善多线程</span></a></li></ol>
+  </div>
+
 
   </div>
 </div>
@@ -119,17 +172,12 @@
     <div class="post-nav">
       <div class="post-nav-item post-nav-next">
         
-          <span>〈 </span>
-          <a href="/2019/12/24/EventBus-Analysis/" rel="next" title="EventBus源码分析">
-          EventBus源码分析
-          </a>
-        
       </div>
   
       <div class="post-nav-item post-nav-prev">
           
-          <a href="/2023/07/25/Deliver-package/" rel="prev" title="北京送快递">
-            北京送快递
+          <a href="/2016/07/03/adapter-Pattern/" rel="prev" title="适配器模式笔记">
+            适配器模式笔记
           </a>
           <span>〉</span>
         
@@ -146,7 +194,7 @@
   <script>
     var disqus_shortname = 'sooola';
     
-    var disqus_url = 'https://sooola.github.io/2023/07/18/The-next-Suhhee/';
+    var disqus_url = 'https://sooola.github.io/2016/06/26/Single-Pattern/';
     
     (function(){
       var dsq = document.createElement('script');

@@ -11,7 +11,7 @@
   <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
   
   
-    <meta name="keywords" content="电影," />
+    <meta name="keywords" content="android," />
   
 
   
@@ -19,7 +19,7 @@
   
   
   <link rel="icon" type="image/x-icon" href="/logo.png">
-  <title>下一个素熙 [ sooola的博客 ]</title>
+  <title>多渠道打包，不同的包名 [ sooola的博客 ]</title>
   
     <!-- stylesheets list from config.yml -->
     
@@ -72,29 +72,40 @@
   <article class="post" id="post">
     <header class="post-header text-center">
       <h1 class="title">
-        下一个素熙
+        多渠道打包，不同的包名
       </h1>
       <span>
         
-        <time class="time" datetime="2023-07-17T17:20:00.000Z">
-        2023-07-17
+        <time class="time" datetime="2019-01-17T15:09:23.000Z">
+        2019-01-17
       </time>
         
       </span>
       <span class="slash">/</span>
       <span class="post-meta">
       <span class="post-tags">
-        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%94%B5%E5%BD%B1/" rel="tag">电影</a></li></ul>
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/" rel="tag">android</a></li></ul>
       </span>
     </span>
       <span class="slash">/</span>
     </header>
 
     <div class="post-content">
-      <p>周末看完下一个素熙，拍得很牛逼，感觉只有韩国，日本才能拍出职场的压抑，在整个剧中，你找不到一个明确的加害者，但结果是底层承受了巨大的压力。电话客户的目的是赚用户的钱，让他别取消套餐，能换更贵的套餐就更好。</p>
-<p>在这个前提下，客户无论怎么屌你，你也不能反抗，客户成了高高在上的存在，你一反抗，公司就会 pua你，公司只是想赚客户的钱，公司不关心你的感受。</p>
-<p>除了公司外，其实没有任何人关心你，父母希望你有稳定的工作，要是你觉得工作辛苦，那是你的问题，要你自己忍耐，克服，对于父母来说，稳定的工作是最重要的，你的感受是次要的。学校的班主任只关心就业率，就业率达标才能涨工资，学校才能继续办下去。教育局根据学习就业率分配资金，就业率好的学校就可以获得更多的钱。开心，快乐，这些东西，不能作为一个指标，在 Excel 表格上体现。</p>
-<p>现在社会整个体制是上层商人、有钱人设计，他们设计这套东西来维护自己的利益，底层人就是应该活在绝望和痛苦之中，上层人用钱这种工具控制底层的人民，这不是单一谁的问题，只要我们活在资本主义，就无法逃避。</p>
+      <p>每个Android项目都有唯一的一个applicationId，在商店市场中，此ID用来标识你的应用。  </p>
+<p>当我们需要打不同特性的版本，如普通版，专业版，而这2个版本是需要在手机里共存，这时候我们需要在不同的渠道中修改applicationId，在渠道的配置的方式如下</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">productFlavors &#123;</span><br><span class="line"></span><br><span class="line">       pro&#123;</span><br><span class="line">           applicationId = &quot;com.example.myapp.pro&quot;</span><br><span class="line">       &#125;</span><br><span class="line">       </span><br><span class="line">        normal&#123;</span><br><span class="line"></span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>如我们的applicationId为<strong>com.example.myapp</strong>，当我们在打pro渠道的时候， applicationId会被替换为 <strong>com.example.myapp.pro</strong>  </p>
+<h3 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h3><p><strong>Installation error: INSTALL_FAILED_CONFLICTING_PROVIDER</strong> </p>
+<p>当我们有使用到FileProvider的时候，会有以上的错误，因为2个应用的provider同名了，2个应用需要用不同的provider名字区分，名字也可以在build中动态配置，步骤如下</p>
+<ol>
+<li>manifest中使用占位符</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;provider</span><br><span class="line">    android:name=&quot;android.support.v4.content.FileProvider&quot;</span><br><span class="line">    android:authorities=&quot;com.example.myapp.$&#123;provider_name&#125;&quot;</span><br><span class="line">    android:exported=&quot;false&quot;</span><br><span class="line">    android:grantUriPermissions=&quot;true&quot;&gt;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>在渠道中定义变量<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">productFlavors &#123;</span><br><span class="line"></span><br><span class="line">       pro&#123;</span><br><span class="line">           applicationId = &quot;com.example.myapp.pro&quot;</span><br><span class="line">           manifestPlaceholders = [provider_name:&quot;pro&quot;]</span><br><span class="line">       &#125;</span><br><span class="line">       </span><br><span class="line">   &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>这样就可以在手机中同时安装2个渠道的包了！</p>
 
     </div>
 
@@ -102,6 +113,11 @@
   </article>
   <div class="toc-container">
     
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B3%A8%E6%84%8F"><span class="toc-text">注意</span></a></li></ol>
+  </div>
+
 
   </div>
 </div>
@@ -120,16 +136,16 @@
       <div class="post-nav-item post-nav-next">
         
           <span>〈 </span>
-          <a href="/2019/12/24/EventBus-Analysis/" rel="next" title="EventBus源码分析">
-          EventBus源码分析
+          <a href="/2017/11/01/Map-navigation/" rel="next" title="Android跳转第三方地图进行导航">
+          Android跳转第三方地图进行导航
           </a>
         
       </div>
   
       <div class="post-nav-item post-nav-prev">
           
-          <a href="/2023/07/25/Deliver-package/" rel="prev" title="北京送快递">
-            北京送快递
+          <a href="/2019/07/15/debug-skill/" rel="prev" title="Android Studio Debug调试技巧">
+            Android Studio Debug调试技巧
           </a>
           <span>〉</span>
         
@@ -146,7 +162,7 @@
   <script>
     var disqus_shortname = 'sooola';
     
-    var disqus_url = 'https://sooola.github.io/2023/07/18/The-next-Suhhee/';
+    var disqus_url = 'https://sooola.github.io/2019/01/17/Multi-channel/';
     
     (function(){
       var dsq = document.createElement('script');

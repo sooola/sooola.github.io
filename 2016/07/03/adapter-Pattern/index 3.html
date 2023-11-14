@@ -11,7 +11,7 @@
   <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
   
   
-    <meta name="keywords" content="电影," />
+    <meta name="keywords" content="android,设计模式," />
   
 
   
@@ -19,7 +19,7 @@
   
   
   <link rel="icon" type="image/x-icon" href="/logo.png">
-  <title>下一个素熙 [ sooola的博客 ]</title>
+  <title>适配器模式笔记 [ sooola的博客 ]</title>
   
     <!-- stylesheets list from config.yml -->
     
@@ -72,29 +72,146 @@
   <article class="post" id="post">
     <header class="post-header text-center">
       <h1 class="title">
-        下一个素熙
+        适配器模式笔记
       </h1>
       <span>
         
-        <time class="time" datetime="2023-07-17T17:20:00.000Z">
-        2023-07-17
+        <time class="time" datetime="2016-07-03T14:36:27.000Z">
+        2016-07-03
       </time>
         
       </span>
       <span class="slash">/</span>
       <span class="post-meta">
       <span class="post-tags">
-        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%94%B5%E5%BD%B1/" rel="tag">电影</a></li></ul>
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/" rel="tag">android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li></ul>
       </span>
     </span>
       <span class="slash">/</span>
     </header>
 
     <div class="post-content">
-      <p>周末看完下一个素熙，拍得很牛逼，感觉只有韩国，日本才能拍出职场的压抑，在整个剧中，你找不到一个明确的加害者，但结果是底层承受了巨大的压力。电话客户的目的是赚用户的钱，让他别取消套餐，能换更贵的套餐就更好。</p>
-<p>在这个前提下，客户无论怎么屌你，你也不能反抗，客户成了高高在上的存在，你一反抗，公司就会 pua你，公司只是想赚客户的钱，公司不关心你的感受。</p>
-<p>除了公司外，其实没有任何人关心你，父母希望你有稳定的工作，要是你觉得工作辛苦，那是你的问题，要你自己忍耐，克服，对于父母来说，稳定的工作是最重要的，你的感受是次要的。学校的班主任只关心就业率，就业率达标才能涨工资，学校才能继续办下去。教育局根据学习就业率分配资金，就业率好的学校就可以获得更多的钱。开心，快乐，这些东西，不能作为一个指标，在 Excel 表格上体现。</p>
-<p>现在社会整个体制是上层商人、有钱人设计，他们设计这套东西来维护自己的利益，底层人就是应该活在绝望和痛苦之中，上层人用钱这种工具控制底层的人民，这不是单一谁的问题，只要我们活在资本主义，就无法逃避。</p>
+      <p>#适配器模式<br>定义：将一个类的接口，转换成客户端期望的另一个接口。适配器让原本接口不兼容的类可以合作无间。<br>Example:如我们有一个鸭子对象，现在假设缺少鸭子，想要用一些火鸡来冒充,通过适配器就可以把火鸡封装成像鸭子。<br>鸭子接口</p>
+<pre><code>public interface Duck &#123;
+    public void quack();        //叫
+    public void fly();            //会飞
+&#125;
+</code></pre>
+<p>鸭子对象</p>
+<pre><code>public class MallardDuck implements Duck &#123;
+
+    @Override
+    public void quack() &#123;
+        System.out.println(&quot;Quack&quot;);
+    &#125;
+
+    @Override
+    public void fly() &#123;
+        System.out.println(&quot;I&#39;m flying&quot;);
+    &#125;
+&#125;
+</code></pre>
+<p>火鸡接口</p>
+<pre><code>public interface Turkey &#123;
+
+    public void gobble();        //不同的叫法
+    public void fly();            //会飞
+&#125;
+</code></pre>
+<p>火鸡对象</p>
+<pre><code>public class WildTurkey implements Turkey &#123;
+
+    @Override
+    public void gobble() &#123;
+        System.out.println(&quot;gobble&quot;);
+    &#125;
+
+    @Override
+    public void fly() &#123;
+        System.out.println(&quot;I&#39;m flying a short distance&quot;);
+    &#125;
+&#125;
+</code></pre>
+<p>火鸡适配器</p>
+<pre><code>public class TurkeyAdapter implements Duck &#123;
+    Turkey turkey;
+    
+    public TurkeyAdapter(Turkey turkey) &#123;
+        this.turkey = turkey;
+    &#125;
+    
+    @Override
+    public void quack() &#123;
+        turkey.gobble();        //假装鸭子叫
+    &#125;
+
+    @Override
+    public void fly() &#123;
+        //因为飞的距离短，连续调用5次
+        for(int i = 0 ;i &lt; 5 ; i++)&#123;
+            turkey.fly();
+        &#125;
+    &#125;
+&#125;
+</code></pre>
+<p>要用火鸡适配鸭子过程如下：  </p>
+<ul>
+<li>适配器要实现想转换成的类型接口(鸭子接口)。</li>
+<li>要取得适配对象的引用。</li>
+<li>实现接口中所有的方法。</li>
+</ul>
+<p>最后测试一下:<br>    public class DuckTestDrive {</p>
+<pre><code>    public static void main(String[] args) &#123;
+        MallardDuck duck = new MallardDuck();
+        
+        WildTurkey turkey = new WildTurkey();
+        Duck turkeyAdapter = new TurkeyAdapter(turkey);
+        System.out.println(&quot;The Turkey says...&quot;);
+        
+        turkey.gobble();
+        turkey.fly();
+        
+        System.out.println(&quot;\n The Duck say...&quot;);
+        testDuck(duck);
+        System.out.println(&quot;\nThe TurkeyAdapter say...&quot;);
+        testDuck(turkeyAdapter);
+    &#125;
+    
+    static void testDuck(Duck duck)&#123;
+        duck.quack();
+        duck.fly();
+    &#125;
+&#125;
+</code></pre>
+<p>测试结果</p>
+<pre><code>The Turkey says...
+gobble
+I&#39;m flying a short distance
+
+ The Duck say...
+Quack
+I&#39;m flying
+
+The TurkeyAdapter say...
+gobble
+I&#39;m flying a short distance
+I&#39;m flying a short distance
+I&#39;m flying a short distance
+I&#39;m flying a short distance
+I&#39;m flying a short distance
+</code></pre>
+<p>可以知道客户使用适配模式的过程如下：  </p>
+<ul>
+<li>客户通过目标接口调用适配器的方法对适配器发出请求</li>
+<li>适配器使用被适配者接口把请求转换成适配者的一个或多个调用接口。</li>
+<li>客户接收到调用的结果，但不知道这是适配器起转换作用。</li>
+</ul>
+<p>##总结</p>
+<ul>
+<li>当需要使用一个现有的类而其接口并不符合你的需求时，使用适配器</li>
+<li>适配器改变接口以符合客户的期望</li>
+<li>适配器将一个对象包装起来以改变其接口</li>
+</ul>
 
     </div>
 
@@ -120,16 +237,16 @@
       <div class="post-nav-item post-nav-next">
         
           <span>〈 </span>
-          <a href="/2019/12/24/EventBus-Analysis/" rel="next" title="EventBus源码分析">
-          EventBus源码分析
+          <a href="/2016/06/26/Single-Pattern/" rel="next" title="单例模式学习笔记">
+          单例模式学习笔记
           </a>
         
       </div>
   
       <div class="post-nav-item post-nav-prev">
           
-          <a href="/2023/07/25/Deliver-package/" rel="prev" title="北京送快递">
-            北京送快递
+          <a href="/2016/09/07/Espresso-introduce/" rel="prev" title="Android Espresso UI自动测试的搭建">
+            Android Espresso UI自动测试的搭建
           </a>
           <span>〉</span>
         
@@ -146,7 +263,7 @@
   <script>
     var disqus_shortname = 'sooola';
     
-    var disqus_url = 'https://sooola.github.io/2023/07/18/The-next-Suhhee/';
+    var disqus_url = 'https://sooola.github.io/2016/07/03/adapter-Pattern/';
     
     (function(){
       var dsq = document.createElement('script');

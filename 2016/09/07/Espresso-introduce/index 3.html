@@ -1,0 +1,320 @@
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#202020"/>
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+  
+  
+    <meta name="keywords" content="android," />
+  
+
+  
+    <meta name="description" content="sola的博客,java,Android,游戏，动漫，日剧" />
+  
+  
+  <link rel="icon" type="image/x-icon" href="/logo.png">
+  <title>Android Espresso UI自动测试的搭建 [ sooola的博客 ]</title>
+  
+    <!-- stylesheets list from config.yml -->
+    
+      <link rel="stylesheet" href="//cdn.bootcss.com/pure/1.0.0/pure-min.css">
+    
+      <link rel="stylesheet" href="/css/xoxo.css">
+    
+  
+<meta name="generator" content="Hexo 7.0.0"></head>
+
+
+<body>
+  <div class="nav-container">
+    <nav class="home-menu pure-menu pure-menu-horizontal">
+  <a class="pure-menu-heading" href="/">
+    <img class="avatar" src="https://sooola.github.io/images/logo.png">
+    <span class="title">sooola的博客</span>
+  </a>
+
+  <ul class="pure-menu-list clearfix">
+      
+          
+            <li class="pure-menu-item"><a href="/" class="pure-menu-link">首页</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/archives" class="pure-menu-link">归档</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/tags" class="pure-menu-link">标签</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/search" class="pure-menu-link">搜索</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="https://github.com/sooola" class="pure-menu-link">关于</a></li>
+          
+      
+  </ul>
+   
+</nav>
+  </div>
+
+  <div class="container" id="content-outer">
+    <div class="inner" id="content-inner">
+      <div class="post-container">
+  <article class="post" id="post">
+    <header class="post-header text-center">
+      <h1 class="title">
+        Android Espresso UI自动测试的搭建
+      </h1>
+      <span>
+        
+        <time class="time" datetime="2016-09-07T14:27:51.000Z">
+        2016-09-07
+      </time>
+        
+      </span>
+      <span class="slash">/</span>
+      <span class="post-meta">
+      <span class="post-tags">
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/" rel="tag">android</a></li></ul>
+      </span>
+    </span>
+      <span class="slash">/</span>
+    </header>
+
+    <div class="post-content">
+      <p>#Espresso是什么？<br>Espresso 是谷歌官方实现的一个UI测试框架，用来确保UI的正确，如每次上线前，你想简单的进入每个界面看看会不会crash，如果界面很多，每次都人工操作就太麻烦了，使用这个框架可以帮助你完成这个任务。<br>#开始搭建Espresso<br>项目的build.gradle修改如下:<br>1.packagingOptions {<br> exclude ‘META-INF&#x2F;maven&#x2F;com.google.guava&#x2F;guava&#x2F;pom.xml’<br> exclude ‘META-INF&#x2F;maven&#x2F;com.google.guava&#x2F;guava&#x2F;pom.properties’}<br>解决重复加载的问题</p>
+<p>2.defaultConfig内增加,testInstrumentationRunner<br>defaultConfig {<br>testInstrumentationRunner “android.support.test.runner.AndroidJUnitRunner”}  </p>
+<p>3.在dependencies中加入相关的包<br>dependencies {<br>    androidTestCompile(‘com.android.support.test:runner:0.5’){}<br>    androidTestCompile (‘com.android.support.test:rules:0.5’){}<br>    androidTestCompile (‘com.android.support.test.espresso:espresso-core:2.2.2’){}<br>    androidTestCompile (‘com.android.support.test.uiautomator:uiautomator-v18:2.1.2’){}<br>    androidTestCompile ‘org.mockito:mockito-core:1.9.5’<br>    androidTestCompile ‘org.hamcrest:hamcrest-library:1.3’<br>    androidTestCompile(‘com.android.support.test.espresso:espresso-contrib:2.0’) {<br>  exclude group: ‘com.android.support’, module: ‘appcompat’<br> exclude group: ‘com.android.support’, module: ‘support-v4’<br> exclude module: ‘recyclerview-v7’}<br>    androidTestCompile ‘com.android.support.test.espresso:espresso-web:2.2.2’<br>}</p>
+<p>####下面附上完整的build.gradle文件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">android &#123;</span><br><span class="line">    compileSdkVersion 23</span><br><span class="line">    buildToolsVersion &quot;24.0.0&quot;</span><br><span class="line">    packagingOptions &#123;</span><br><span class="line">        exclude &#x27;META-INF/maven/com.google.guava/guava/pom.xml&#x27;</span><br><span class="line">        exclude &#x27;META-INF/maven/com.google.guava/guava/pom.properties&#x27;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    defaultConfig &#123;</span><br><span class="line">        applicationId &quot;com.example.administrator.useespress&quot;</span><br><span class="line">        minSdkVersion 19</span><br><span class="line">        targetSdkVersion 23</span><br><span class="line">        versionCode 1</span><br><span class="line">        versionName &quot;1.0&quot;</span><br><span class="line">        testInstrumentationRunner &quot;android.support.test.runner.AndroidJUnitRunner&quot;</span><br><span class="line">    &#125;</span><br><span class="line">    buildTypes &#123;</span><br><span class="line">        release &#123;</span><br><span class="line">            minifyEnabled false</span><br><span class="line">            proguardFiles getDefaultProguardFile(&#x27;proguard-android.txt&#x27;), &#x27;proguard-rules.pro&#x27;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">dependencies &#123;</span><br><span class="line">    compile fileTree(dir: &#x27;libs&#x27;, include: [&#x27;*.jar&#x27;])</span><br><span class="line">    testCompile &#x27;junit:junit:4.12&#x27;</span><br><span class="line">    compile &#x27;com.android.support:appcompat-v7:23.1.1&#x27;</span><br><span class="line"></span><br><span class="line">    androidTestCompile(&#x27;com.android.support.test:runner:0.5&#x27;)&#123;&#125;</span><br><span class="line">    // Set this dependency to use JUnit 4 rules</span><br><span class="line">    androidTestCompile (&#x27;com.android.support.test:rules:0.5&#x27;)&#123;&#125;</span><br><span class="line">    // Set this dependency to build and run Espresso tests</span><br><span class="line">    androidTestCompile (&#x27;com.android.support.test.espresso:espresso-core:2.2.2&#x27;)&#123;&#125;</span><br><span class="line">    // Set this dependency to build and run UI Automator tests</span><br><span class="line">    androidTestCompile (&#x27;com.android.support.test.uiautomator:uiautomator-v18:2.1.2&#x27;)&#123;&#125;</span><br><span class="line">    //mock tests</span><br><span class="line">    androidTestCompile &#x27;org.mockito:mockito-core:1.9.5&#x27;</span><br><span class="line">    androidTestCompile &#x27;org.hamcrest:hamcrest-library:1.3&#x27;</span><br><span class="line"></span><br><span class="line">    androidTestCompile(&#x27;com.android.support.test.espresso:espresso-contrib:2.0&#x27;) &#123;</span><br><span class="line">        exclude group: &#x27;com.android.support&#x27;, module: &#x27;appcompat&#x27;</span><br><span class="line">        exclude group: &#x27;com.android.support&#x27;, module: &#x27;support-v4&#x27;</span><br><span class="line">        exclude module: &#x27;recyclerview-v7&#x27;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    androidTestCompile &#x27;com.android.support.test.espresso:espresso-web:2.2.2&#x27;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>#创建一个Espresso测试类<br>在app&#x2F;androidTest&#x2F;java 下创建一个类</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">public class MainActivityTest &#123;</span><br><span class="line">   private String mStringToBetyped;</span><br><span class="line"></span><br><span class="line">   @Rule</span><br><span class="line">   public ActivityTestRule&lt;MainActivity&gt; mActivityRule = new ActivityTestRule&lt;&gt;(</span><br><span class="line">   MainActivity.class);</span><br><span class="line"> </span><br><span class="line">   @Before</span><br><span class="line">   public void initString()&#123;</span><br><span class="line">   mStringToBetyped = &quot;click&quot;;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line"></span><br><span class="line">   @Test</span><br><span class="line">   public void clickTest() throws InterruptedException &#123;</span><br><span class="line">   Thread.sleep(1000);</span><br><span class="line">   onView(withText(mStringToBetyped)).perform(click());</span><br><span class="line">   Thread.sleep(1000);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>1.首先创建一个@Rule ActivityTestRule用来指明被测试的Activity;<br>2.可以使用@Before注解来做测试前的准备工作。<br>3.测试方法写在@Test 注解下，方法名任意<br>onView(withText(mStringToBetyped)).perform(click());<br>上面会执行如下操作，找到显示click文字的view，进行点击操作。<br>#创建一个TestRunner<br>1.点击app，选中Edit Config</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1816215-8dc3fcf17ad24568.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"><br>2.点击+ ，选择Android Test</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1816215-69e9ea13786d8c73.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"></p>
+<p>3.需要配置的地方如下，<br>1.先修改名字 2. module选择app 3.测试的类选择刚刚我们创建的class 4.修改runner的类型 5.显示选择设配的dialog</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/1816215-5bf85e3f5769baf0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"></p>
+<p>Ok,这样就配置好了， run一下试试吧！</p>
+<p>一些简单的用法文章在这里<a href="http://www.jianshu.com/p/a856ea119d11">Android Espresso基本使用</a></p>
+
+    </div>
+
+    <div>全文完。</div>
+  </article>
+  <div class="toc-container">
+    
+
+  </div>
+</div>
+<div class="copyright">
+    <span>本作品采用</span>
+    <a href="https://creativecommons.org/licenses/by/4.0/">知识共享署名 4.0 国际许可协议</a>
+    <span>进行许可。 转载时请注明原文链接。</span>
+</div>
+<div class="share" style="width: 100%;">
+
+
+</div>
+
+  
+    <div class="post-nav">
+      <div class="post-nav-item post-nav-next">
+        
+          <span>〈 </span>
+          <a href="/2016/07/03/adapter-Pattern/" rel="next" title="适配器模式笔记">
+          适配器模式笔记
+          </a>
+        
+      </div>
+  
+      <div class="post-nav-item post-nav-prev">
+          
+          <a href="/2016/09/07/Espresso-baseuse/" rel="prev" title="Android Espresso基本使用">
+            Android Espresso基本使用
+          </a>
+          <span>〉</span>
+        
+      </div>
+    </div>
+  
+
+  <section class="disqus-comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </section>
+
+  <script>
+    var disqus_shortname = 'sooola';
+    
+    var disqus_url = 'https://sooola.github.io/2016/09/07/Espresso-introduce/';
+    
+    (function(){
+      var dsq = document.createElement('script');
+      dsq.type = 'text/javascript';
+      dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+
+  <script id="dsq-count-scr" src="//sooola.disqus.com/count.js" async></script>
+
+
+
+    </div>
+
+    
+
+  </div>
+  <footer class="footer text-center">
+    <div id="bottom-inner">
+        <a class="bottom-item" href="https://sooola.github.io/">首页</a> |
+        <a class="bottom-item" href="https://sooola.github.io/" target="_blank">主站</a> |
+        <a class="bottom-item" href="https://github.com/sooola" target="_blank">GitHub</a> |
+        <a class="bottom-item" href="https://hexo.io" target="_blank">Powered by hexo</a> |
+        <a class="bottom-item" href="https://github.com/KevinOfNeu/hexo-theme-xoxo" target="_blank">Theme xoxo</a>
+    </div>
+</footer>
+  
+
+<script>
+  (function(window, document, undefined) {
+
+    var timer = null;
+
+    function returnTop() {
+      cancelAnimationFrame(timer);
+      timer = requestAnimationFrame(function fn() {
+        var oTop = document.body.scrollTop || document.documentElement.scrollTop;
+        if (oTop > 0) {
+          document.body.scrollTop = document.documentElement.scrollTop = oTop - 50;
+          timer = requestAnimationFrame(fn);
+        } else {
+          cancelAnimationFrame(timer);
+        }
+      });
+    }
+
+    var hearts = [];
+    window.requestAnimationFrame = (function() {
+      return window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function(callback) {
+          setTimeout(callback, 1000 / 60);
+        }
+    })();
+    init();
+
+    function init() {
+      css(".heart{z-index:9999;width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: absolute;}.heart:after{top: -5px;}.heart:before{left: -5px;}");
+      attachEvent();
+      gameloop();
+      addMenuEvent();
+    }
+
+    function gameloop() {
+      for (var i = 0; i < hearts.length; i++) {
+        if (hearts[i].alpha <= 0) {
+          document.body.removeChild(hearts[i].el);
+          hearts.splice(i, 1);
+          continue;
+        }
+        hearts[i].y--;
+        hearts[i].scale += 0.004;
+        hearts[i].alpha -= 0.013;
+        hearts[i].el.style.cssText = "left:" + hearts[i].x + "px;top:" + hearts[i].y + "px;opacity:" + hearts[i].alpha + ";transform:scale(" + hearts[i].scale + "," + hearts[i].scale + ") rotate(45deg);background:" + hearts[i].color;
+      }
+      requestAnimationFrame(gameloop);
+    }
+
+    /**
+     * 给logo设置点击事件
+     * 
+     * - 回到顶部
+     * - 出现爱心
+     */
+    function attachEvent() {
+      var old = typeof window.onclick === "function" && window.onclick;
+      var logo = document.getElementById("logo");
+      if (logo) {
+        logo.onclick = function(event) {
+          returnTop();
+          old && old();
+          createHeart(event);
+        }
+      }
+      
+    }
+
+    function createHeart(event) {
+      var d = document.createElement("div");
+      d.className = "heart";
+      hearts.push({
+        el: d,
+        x: event.clientX - 5,
+        y: event.clientY - 5,
+        scale: 1,
+        alpha: 1,
+        color: randomColor()
+      });
+      document.body.appendChild(d);
+    }
+
+    function css(css) {
+      var style = document.createElement("style");
+      style.type = "text/css";
+      try {
+        style.appendChild(document.createTextNode(css));
+      } catch (ex) {
+        style.styleSheet.cssText = css;
+      }
+      document.getElementsByTagName('head')[0].appendChild(style);
+    }
+
+    function randomColor() {
+      // return "rgb(" + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + ")";
+      return "#F44336";
+    }
+
+    function addMenuEvent() {
+      var menu = document.getElementById('menu-main-post');
+      if (menu) {
+        var toc = document.getElementById('toc');
+        if (toc) {
+          menu.onclick = function() {
+            if (toc) {
+              if (toc.style.display == 'block') {
+                toc.style.display = 'none';
+              } else {
+                toc.style.display = 'block';
+              }
+            }
+          };
+        } else {
+          menu.style.display = 'none';
+        }
+      }
+    }
+
+  })(window, document);
+</script>
+
+  
+
+
+
+</body>
+</html>

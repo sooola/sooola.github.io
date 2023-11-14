@@ -11,7 +11,7 @@
   <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
   
   
-    <meta name="keywords" content="电影," />
+    <meta name="keywords" content="android,设计模式," />
   
 
   
@@ -19,7 +19,7 @@
   
   
   <link rel="icon" type="image/x-icon" href="/logo.png">
-  <title>下一个素熙 [ sooola的博客 ]</title>
+  <title>观察者模式笔记 [ sooola的博客 ]</title>
   
     <!-- stylesheets list from config.yml -->
     
@@ -72,29 +72,124 @@
   <article class="post" id="post">
     <header class="post-header text-center">
       <h1 class="title">
-        下一个素熙
+        观察者模式笔记
       </h1>
       <span>
         
-        <time class="time" datetime="2023-07-17T17:20:00.000Z">
-        2023-07-17
+        <time class="time" datetime="2017-01-04T14:33:11.000Z">
+        2017-01-04
       </time>
         
       </span>
       <span class="slash">/</span>
       <span class="post-meta">
       <span class="post-tags">
-        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E7%94%B5%E5%BD%B1/" rel="tag">电影</a></li></ul>
+        <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/android/" rel="tag">android</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a></li></ul>
       </span>
     </span>
       <span class="slash">/</span>
     </header>
 
     <div class="post-content">
-      <p>周末看完下一个素熙，拍得很牛逼，感觉只有韩国，日本才能拍出职场的压抑，在整个剧中，你找不到一个明确的加害者，但结果是底层承受了巨大的压力。电话客户的目的是赚用户的钱，让他别取消套餐，能换更贵的套餐就更好。</p>
-<p>在这个前提下，客户无论怎么屌你，你也不能反抗，客户成了高高在上的存在，你一反抗，公司就会 pua你，公司只是想赚客户的钱，公司不关心你的感受。</p>
-<p>除了公司外，其实没有任何人关心你，父母希望你有稳定的工作，要是你觉得工作辛苦，那是你的问题，要你自己忍耐，克服，对于父母来说，稳定的工作是最重要的，你的感受是次要的。学校的班主任只关心就业率，就业率达标才能涨工资，学校才能继续办下去。教育局根据学习就业率分配资金，就业率好的学校就可以获得更多的钱。开心，快乐，这些东西，不能作为一个指标，在 Excel 表格上体现。</p>
-<p>现在社会整个体制是上层商人、有钱人设计，他们设计这套东西来维护自己的利益，底层人就是应该活在绝望和痛苦之中，上层人用钱这种工具控制底层的人民，这不是单一谁的问题，只要我们活在资本主义，就无法逃避。</p>
+      <h1 id="什么是观察者模式"><a href="#什么是观察者模式" class="headerlink" title="什么是观察者模式"></a>什么是观察者模式</h1><p>现实生活中的例子：  </p>
+<ol>
+<li>报社的业务是出版报纸  </li>
+<li>向某家报社订阅报纸，只要他们有新报纸出版，就会给你送来。只要你是他们的订户，就会一直收到报纸。  </li>
+<li>当你不想再看报纸时，取消订阅，他们就不会再送新报纸来。  </li>
+<li>只要报纸还在运营，就会一直有人向他们订阅报纸或取消报纸。</li>
+</ol>
+<h1 id="定义观察者模式"><a href="#定义观察者模式" class="headerlink" title="定义观察者模式"></a>定义观察者模式</h1><p><strong>观察值模式</strong>  定义了对象之间的一对多依赖，这样一来，当一个对象改变状态时，它的所有依赖者都会收到通知并自动更新。</p>
+<p>#观察者模式类图<br><img src="http://upload-images.jianshu.io/upload_images/1816215-5913b6364257b192.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"></p>
+<h1 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h1><p><strong>Subject.class 主题接口</strong></p>
+<pre><code>public interface Subject&#123;
+
+public void registerObserver (Observer o);    //需要一个观察者用与注册
+
+public void removeObserver(Observer o);
+
+public void notifyObservers();&#125;
+</code></pre>
+<p><strong>WeatherData.class 主题实现类</strong></p>
+<pre><code>public class WeatherData implements Subject &#123;        //实现主题接口
+
+private ArrayList&lt;Observer&gt; observers;    //用来记录观察者
+private float temperature;
+private float humidity;
+private float pressure;
+
+public WeatherData() &#123;
+    observers = new ArrayList&lt;&gt;();
+&#125;
+
+@Override
+public void registerObserver(Observer o) &#123;
+    observers.add(o);    //注册观察者，即添加到List后
+&#125;
+
+@Override
+public void removeObserver(Observer o) &#123;
+    int i = observers.indexOf(o);    //移除观察者
+    if (i &gt;=0)&#123;
+        observers.remove(i);
+    &#125;
+&#125;
+
+@Override
+public void notifyObservers() &#123;
+    //遍历每一个观察者，调用观察则的update方法
+    for (int i = 0 ; i &lt; observers.size() ; i++)&#123;
+        Observer observer = observers.get(i);
+        observer.update(WeatherData.this);
+    &#125;
+&#125;
+
+public void measurementsChanged()&#123;
+    notifyObservers();
+&#125;
+
+public void setMeasurements(float temperature , float humidity , float pressure)&#123;
+    //状态改变，调用measurementsChanged，后调用notifyObservers，通知观察则更新
+    this.temperature = temperature;
+    this.humidity = humidity;
+    this.pressure = pressure;
+    measurementsChanged();
+&#125;
+&#125;
+</code></pre>
+<p><strong>观察者接口</strong></p>
+<pre><code>public interface Observer &#123;
+
+public void update(Subject subject);&#125;
+</code></pre>
+<p><strong>观察者实现类</strong></p>
+<pre><code>public class CurrentConditionsDisplay implements Observer ,DisplayElement &#123;
+//实现Observer 可获得通知
+
+private float tempeature;
+private float humidity;
+private Subject weatherData;
+
+public CurrentConditionsDisplay(WeatherData weatherData) &#123;
+    this.weatherData = weatherData;
+    weatherData.registerObserver(this);
+&#125;
+
+@Override
+public void display() &#123;
+    System.out.println(&quot;Current conditions: &quot; + tempeature + &quot;F degrees and &quot; + humidity + 
+            &quot;% humidity&quot;);
+&#125;
+
+@Override
+public void update(Subject subject) &#123;
+    if (subject instanceof WeatherData)&#123;
+        WeatherData weatherData = (WeatherData) subject;
+        this.tempeature = weatherData.getTemperature();
+        this.humidity = weatherData.getHumidity();
+        display();
+    &#125;
+&#125;
+</code></pre>
 
     </div>
 
@@ -102,6 +197,11 @@
   </article>
   <div class="toc-container">
     
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F"><span class="toc-text">什么是观察者模式</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%9A%E4%B9%89%E8%A7%82%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F"><span class="toc-text">定义观察者模式</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%9E%E4%BE%8B"><span class="toc-text">实例</span></a></li></ol>
+  </div>
+
 
   </div>
 </div>
@@ -120,16 +220,16 @@
       <div class="post-nav-item post-nav-next">
         
           <span>〈 </span>
-          <a href="/2019/12/24/EventBus-Analysis/" rel="next" title="EventBus源码分析">
-          EventBus源码分析
+          <a href="/2016/11/16/login-v2ex/" rel="next" title="Android模拟登录V2EX">
+          Android模拟登录V2EX
           </a>
         
       </div>
   
       <div class="post-nav-item post-nav-prev">
           
-          <a href="/2023/07/25/Deliver-package/" rel="prev" title="北京送快递">
-            北京送快递
+          <a href="/2017/11/01/Map-navigation/" rel="prev" title="Android跳转第三方地图进行导航">
+            Android跳转第三方地图进行导航
           </a>
           <span>〉</span>
         
@@ -146,7 +246,7 @@
   <script>
     var disqus_shortname = 'sooola';
     
-    var disqus_url = 'https://sooola.github.io/2023/07/18/The-next-Suhhee/';
+    var disqus_url = 'https://sooola.github.io/2017/01/04/Observer-Pattern/';
     
     (function(){
       var dsq = document.createElement('script');
